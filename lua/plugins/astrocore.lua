@@ -1,5 +1,3 @@
-if true then return {} end -- WARN: REMOVE THIS LINE TO ACTIVATE THIS FILE
-
 -- AstroCore provides a central place to modify mappings, vim options, autocommands, and more!
 -- Configuration documentation can be found with `:h astrocore`
 -- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
@@ -68,6 +66,11 @@ return {
       t = {
         -- setting a mapping to false will disable it
         -- ["<esc>"] = false,
+        ["<ESC>"] = {"<C-\\><C-n>", desc = "change normal mode"},
+      },
+      v = {
+        ["J"] = { ":move '>+1<CR>gv-gv", desc = "Move lines of code up" },
+        ["K"] = { ":move '<-2<CR>gv-gv", desc = "Move lines of code down" },
       },
     },
   },
