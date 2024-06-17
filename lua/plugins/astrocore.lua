@@ -3,6 +3,44 @@
 -- NOTE: We highly recommend setting up the Lua Language Server (`:LspInstall lua_ls`)
 --       as this provides autocomplete and documentation while editing
 
+local opt_config = function()
+  local opt = {}
+
+  -- set to true or false etc.
+  opt["relativenumber"] = false -- sets vim.opt.relativenumber
+  opt["number"] = true -- sets vim.opt.number
+  opt["spell"] = false -- sets vim.opt.spell
+  opt["signcolumn"] = "auto" -- sets vim.opt.signcolumn to auto
+  opt["wrap"] = false -- sets vim.opt.wrap
+  opt["mousescroll"] = { "ver:9", "hor:6" }
+  opt["tabstop"] = 4
+  opt["shiftwidth"] = 4
+
+  if vim.fn.executable "pwsh" then
+    -- sets Nvim terminal for pwsh (https://www.siddharta.me/configuring-neovim-as-a-python-ide-2023.html)
+    opt["shell"] = vim.fn.executable "pwsh" and "pwsh" or "/bin/bash"
+    opt["shellcmdflag"] =
+      "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+    opt["shellredir"] = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+    opt["shellpipe"] = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+    opt["shellquote"] = ""
+    opt["shellxquote"] = ""
+  end
+
+  return opt
+end
+
+local g_config = function()
+  local g = {}
+
+  -- configure global vim variables (vim.g)
+  -- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
+  -- This can be found in the `lua/lazy_setup.lua` file
+  if vim.fn.executable "pwsh" then g["python3_host_prog"] = vim.fn.system { "which", "python3" } end
+
+  return g
+end
+
 ---@type LazySpec
 return {
   "AstroNvim/astrocore",
@@ -24,18 +62,8 @@ return {
     },
     -- vim options can be configured here
     options = {
-      opt = { -- vim.opt.<key>
-        relativenumber = true, -- sets vim.opt.relativenumber
-        number = true, -- sets vim.opt.number
-        spell = false, -- sets vim.opt.spell
-        signcolumn = "auto", -- sets vim.opt.signcolumn to auto
-        wrap = false, -- sets vim.opt.wrap
-      },
-      g = { -- vim.g.<key>
-        -- configure global vim variables (vim.g)
-        -- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
-        -- This can be found in the `lua/lazy_setup.lua` file
-      },
+      opt = opt_config(), -- vim.opt.<key>
+      g = g_config(), -- vim.g.<key>
     },
     -- Mappings can be configured through AstroCore as well.
     -- NOTE: keycodes follow the casing in the vimdocs. For example, `<Leader>` must be capitalized
@@ -66,7 +94,7 @@ return {
       t = {
         -- setting a mapping to false will disable it
         -- ["<esc>"] = false,
-        ["<ESC>"] = {"<C-\\><C-n>", desc = "change normal mode"},
+        ["<ESC>"] = { "<C-\\><C-n>", desc = "change normal mode" },
       },
       v = {
         ["J"] = { ":move '>+1<CR>gv-gv", desc = "Move lines of code up" },
