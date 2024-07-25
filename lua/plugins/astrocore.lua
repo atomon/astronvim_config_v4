@@ -16,7 +16,7 @@ local opt_config = function()
   opt["tabstop"] = 4
   opt["shiftwidth"] = 4
 
-  if vim.fn.executable "pwsh" then
+  if vim.fn.executable == "pwsh" then
     -- sets Nvim terminal for pwsh (https://www.siddharta.me/configuring-neovim-as-a-python-ide-2023.html)
     opt["shell"] = vim.fn.executable "pwsh" and "pwsh" or "/bin/bash"
     opt["shellcmdflag"] =
@@ -36,7 +36,7 @@ local g_config = function()
   -- configure global vim variables (vim.g)
   -- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
   -- This can be found in the `lua/lazy_setup.lua` file
-  if vim.fn.executable "pwsh" then g["python3_host_prog"] = vim.fn.system { "which", "python3" } end
+  if vim.fn.executable == "pwsh" then g["python3_host_prog"] = vim.fn.system { "which", "python3" } end
 
   return g
 end
