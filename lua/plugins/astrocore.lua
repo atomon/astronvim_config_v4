@@ -38,7 +38,7 @@ local g_config = function()
   -- configure global vim variables (vim.g)
   -- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
   -- This can be found in the `lua/lazy_setup.lua` file
-  if vim.fn.executable "pwsh" then g["python3_host_prog"] = vim.fn.system { "which", "python3" } end
+  if vim.fn.executable == "pwsh" then g["python3_host_prog"] = vim.fn.system { "which", "python3" } end
 
   g["presence_editing_text"] = "Editing code"
   g["presence_workspace_text"] = "Working on workspace"
