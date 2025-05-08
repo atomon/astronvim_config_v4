@@ -8,23 +8,25 @@ local opt_config = function()
 
   -- set to true or false etc.
   opt["relativenumber"] = false -- sets vim.opt.relativenumber
-  opt["number"] = true -- sets vim.opt.number
-  opt["spell"] = false -- sets vim.opt.spell
-  opt["signcolumn"] = "auto" -- sets vim.opt.signcolumn to auto
-  opt["wrap"] = false -- sets vim.opt.wrap
+  opt["number"] = true          -- sets vim.opt.number
+  opt["spell"] = false          -- sets vim.opt.spell
+  opt["signcolumn"] = "auto"    -- sets vim.opt.signcolumn to auto
+  opt["wrap"] = false           -- sets vim.opt.wrap
   opt["mousescroll"] = { "ver:9", "hor:6" }
   opt["tabstop"] = 4
   opt["shiftwidth"] = 4
 
-  if vim.fn.executable "pwsh" then
+  if vim.fn.executable == "pwsh" then
     -- sets Nvim terminal for pwsh (https://www.siddharta.me/configuring-neovim-as-a-python-ide-2023.html)
-    opt["shell"] = vim.fn.executable "pwsh" and "pwsh" or "/bin/bash"
+    opt["shell"] = "pwsh"
     opt["shellcmdflag"] =
-      "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+    "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
     opt["shellredir"] = "-RedirectStandardOutput %s -NoNewWindow -Wait"
     opt["shellpipe"] = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
     opt["shellquote"] = ""
     opt["shellxquote"] = ""
+  else
+    opt["shell"] = "/bin/bash"
   end
 
   return opt
@@ -38,6 +40,9 @@ local g_config = function()
   -- This can be found in the `lua/lazy_setup.lua` file
   if vim.fn.executable "pwsh" then g["python3_host_prog"] = vim.fn.system { "which", "python3" } end
 
+  g["presence_editing_text"] = "Editing code"
+  g["presence_workspace_text"] = "Working on workspace"
+
   return g
 end
 
@@ -49,11 +54,11 @@ return {
     -- Configure core features of AstroNvim
     features = {
       large_buf = { size = 1024 * 500, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
-      autopairs = true, -- enable autopairs at start
-      cmp = true, -- enable completion at start
-      diagnostics_mode = 3, -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
-      highlighturl = true, -- highlight URLs at start
-      notifications = true, -- enable notifications at start
+      autopairs = true,                                 -- enable autopairs at start
+      cmp = true,                                       -- enable completion at start
+      diagnostics_mode = 3,                             -- diagnostic mode on start (0 = off, 1 = no signs/virtual text, 2 = no virtual text, 3 = on)
+      highlighturl = true,                              -- highlight URLs at start
+      notifications = true,                             -- enable notifications at start
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
@@ -63,7 +68,7 @@ return {
     -- vim options can be configured here
     options = {
       opt = opt_config(), -- vim.opt.<key>
-      g = g_config(), -- vim.g.<key>
+      g = g_config(),     -- vim.g.<key>
     },
     -- Mappings can be configured through AstroCore as well.
     -- NOTE: keycodes follow the casing in the vimdocs. For example, `<Leader>` must be capitalized
